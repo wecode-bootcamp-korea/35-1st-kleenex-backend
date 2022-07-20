@@ -39,7 +39,7 @@ class ProductImage(models.Model):
 
 
 class Size(models.Model): 
-    size               = models.CharField(max_length = 50)
+    name               = models.CharField(max_length = 50)
     price              = models.DecimalField(max_digits = 8, decimal_places = 2)
     product            = models.ForeignKey('Product', on_delete = models.CASCADE)
   
@@ -64,7 +64,7 @@ class TasteByProduct(models.Model):
     taste              = models.ForeignKey('Taste',   on_delete = models.CASCADE)
 
     class Meta: 
-        db_table       = 'taste by products'
+        db_table       = 'taste_by_products'
 
 class Grainding(models.Model): 
     type               = models.CharField(max_length = 100)
@@ -83,4 +83,4 @@ class GraindByProduct(models.Model):
     grainding          = models.ForeignKey('Grainding', on_delete = models.CASCADE)
 
     class Meta: 
-        db_table       = 'gainding by products'
+        db_table       = 'gainding_by_products'
