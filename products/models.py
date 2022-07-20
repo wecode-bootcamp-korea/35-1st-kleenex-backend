@@ -3,42 +3,84 @@ from django.db import models
 from core.models import TimeStampModel
 
 
-class Categories(models.Model): 
-    name = models.CharField(max_length=50)
+class Category(models.Model): 
+    name               = models.CharField(max_length=50)
+
+    class Meta:
+        db_table       = 'categories'
 
 
-class SubCategories(models.Model): 
-    name     = models.CharField(max_length=50)
-    category = models.ForeignKey('Categories', on_delete=models.CASCADE)
+
+class SubCategory(models.Model): 
+    name               = models.CharField(max_length = 50)
+    category           = models.ForeignKey('Category', on_delete = models.CASCADE)
+
+    class Meta:
+        db_table       = 'subcategories'
 
 
-class Products(TimeStampModel):
-    name         = models.CharField(max_length=150, unique=True)
-    eng_name     = models.CharField(max_length=250, unique=True)
-    rosting_date = models.DateField()
-    price        = models.DecimalField()
+class Product(TimeStampModel):
+    name               = models.CharField(max_length = 150, unique = True)
+    eng_name           = models.CharField(max_length = 250, unique = True)
+    rosting_date       = models.DateField()
+    price              = models.DecimalField(max_digits = 8, decimal_places = 2)
+    subcategory        = models.ForeignKey('Subcategory', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table       = 'products'
 
 
-class ProductImages(models.Model):
-    url     = models.CharField(max_length=300)
-    product = models.ForeignKey('Products', on_delete=models.CASCADE)
+class ProductImage(models.Model):
+    url                = models.CharField(max_length = 300)
+    product            = models.ForeignKey('Product', on_delete = models.CASCADE)
+
+    class Meta:
+        db_table       = 'product_images'
 
 
-class Sizes(models.Model): 
-    size    = models.CharField(max_length=50)
-    price   = models.DecimalField()
-    product = models.ForeignKey('Products', on_delete=models.CASCADE)
-    
+class Size(models.Model): 
+    size               = models.CharField(max_length = 50)
+    price              = models.DecimalField(max_digits = 8, decimal_places = 2)
+    product            = models.ForeignKey('Product', on_delete = models.CASCADE)
+  
+    class Meta:
+        db_table       = 'sizes'
+  
 
-class Tastes(models.Model): 
-    tastes          = models.CharField(max_length=50)
-    products_tastes = models.ManyToManyField(
-        'Products', related_name = 'taste'
+class Taste(models.Model): 
+    name               = models.CharField(max_length = 50)
+    product_stastes    = models.ManyToManyField(
+        'Product',
+        through        = 'TasteByProduct',
+        through_fields = ('taste', 'product')
     )
 
+    class Meta:
+        db_table       = 'tastes'
+
+
+class TasteByProduct(models.Model): 
+    product            = models.ForeignKey('Product', on_delete = models.CASCADE)
+    taste              = models.ForeignKey('Taste',   on_delete = models.CASCADE)
+
+    class Meta: 
+        db_table       = 'taste by products'
 
 class Grainding(models.Model): 
-    type               = models.CharField(max_length=100)
+    type               = models.CharField(max_length = 100)
     products_grainding = models.ManyToManyField(
-        'Products', related_name = 'graind'
+        'Product',
+        through         = 'GraindByProduct',
+        through_fields = ('grainding', 'product')
     )
+
+    class Meta: 
+        db_table       = 'graindings'
+
+
+class GraindByProduct(models.Model): 
+    product            = models.ForeignKey('Product',   on_delete = models.CASCADE)
+    grainding          = models.ForeignKey('Grainding', on_delete = models.CASCADE)
+
+    class Meta: 
+        db_table       = 'gainding by products'
