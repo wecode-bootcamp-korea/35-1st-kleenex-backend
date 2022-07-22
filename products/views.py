@@ -11,6 +11,7 @@ class MainProductView(View):
         premiums             = Product.objects.all().order_by('-price')[:3]
         fresh_products       = Product.objects.all().order_by('-roasting_date')[:4]
         result_premium       = [{
+            
                     'id'            : premium.id,
                     'name'          : premium.name,
                     'eng_name'      : premium.eng_name,
