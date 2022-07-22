@@ -4,46 +4,7 @@ from django.http           import JsonResponse
 from django.views          import View
 from django.core.paginator import Paginator
 
-from products.models  import Grainding, Product, ProductImage, Size, TasteByProduct, SubCategory
-
-
-class MainProductView(View): 
-    def get(self, request): 
-        premiums             = Product.objects.all().order_by('-price')
-        fresh_products       = Product.objects.all().order_by('-roasting_date')
-        result_premium       = []
-        result_fresh_product = []
-        
-        for premium in premiums[:3]: 
-            images = ProductImage.objects.filter(product_id = premium.id)
-            flavors  = TasteByProduct.objects.filter(product_id = premium.id)
-            result_premium.append(
-                {
-                    'name'          : premium.name,
-                    'eng_name'      : premium.eng_name,
-                    'img'           : [image.url for image in images],
-                    'roasting_date' : premium.roasting_date,
-                    'taste'         : [flavor.taste.name for flavor in flavors],
-                    'price'         : premium.price
-                }
-            )
-        
-        for fresh_product in fresh_products[:4]:
-            images = ProductImage.objects.filter(product_id = fresh_product.id)
-            flavors = TasteByProduct.objects.filter(product_id = fresh_product.id)
-            result_fresh_product.append(
-                {
-                    'name'          : premium.name,
-                    'eng_name'      : premium.eng_name,
-                    'img'           : [image.url for image in images],
-                    'roasting_date' : premium.roasting_date,
-                    'taste'         : [flavor.taste.name for flavor in flavors],
-                    'price'         : premium.price
-                }
-            )
-        
-        return JsonResponse({'premium' : result_premium,'fresh_product' : result_fresh_product}, status = 200)
-
+from products.models       import Product, ProductImage, TasteByProduct
 
 class CoffeeProductView(View):
     def get(self, request, coffee_category_id=None):
@@ -79,26 +40,3 @@ class CoffeeProductView(View):
             {'shop_product_list'   : result_products},
             status = 200
         )
-
-
-class ProductDetailView(View): 
-    def get(self, request, product_id): 
-        product        = Product.objects.get(id=product_id)
-        flavors         = TasteByProduct.objects.filter(product_id = product.id)
-        grainding      = Grainding.objects.all()
-        sizes          = Size.objects.all()
-        product_images = ProductImage.objects.filter(product_id = product.id)
-        product_detail = (
-            {
-                'img'        : [image.url for image in product_images],
-                'name'       : product.name,
-                'price'      : product.price,
-                'tastes'     : [flavor.taste.name for flavor in flavors],
-                'graind_type': [graind.type for graind in grainding],
-                'size_type'  : [size.name for size in sizes]
-            }
-        )
-        return JsonResponse({'product_detial' : product_detail}, status = 200)
-
-
-
