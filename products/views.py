@@ -19,6 +19,7 @@ class MainProductView(View):
             flavors  = TasteByProduct.objects.filter(product_id = premium.id)
             result_premium.append(
                 {
+                    'id'            : premium.id,
                     'name'          : premium.name,
                     'eng_name'      : premium.eng_name,
                     'img'           : [image.url for image in images],
@@ -84,9 +85,9 @@ class CoffeeProductView(View):
 class ProductDetailView(View): 
     def get(self, request, product_id): 
         product        = Product.objects.get(id=product_id)
-        flavors         = TasteByProduct.objects.filter(product_id = product.id)
+        flavors        = TasteByProduct.objects.filter(product_id = product.id)
         grainding      = Grainding.objects.all()
-        sizes          = Size.objects.all()
+        sizes          = Size.objects.filter(product_id = product.id)
         product_images = ProductImage.objects.filter(product_id = product.id)
         product_detail = (
             {
@@ -98,4 +99,4 @@ class ProductDetailView(View):
                 'size_type'  : [size.name for size in sizes]
             }
         )
-        return JsonResponse({'product_detial' : product_detail}, status = 200)
+        return JsonResponse({'product_detail' : product_detail}, status = 200)
