@@ -1,11 +1,11 @@
 import json
-import re
 import bcrypt
 
 from django.http import JsonResponse
 from django.views import View
 
 from users.models import User
+from core.utils import *
 
 class SignUpView(View):
     def post(self, request):
@@ -22,6 +22,9 @@ class SignUpView(View):
             check_password(password)
             check_phone_number(phone_number)
             check_email(email)
+            duplicate_check_username(username)
+            duplicate_check_email(email)
+            duplicate_check_phone_number(phone_number)
 
             hashed_password     = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
@@ -39,32 +42,3 @@ class SignUpView(View):
             return JsonResponse({"MESSAGE":"KEY_ERROR"}, status=400)
         except ValueError as e :
             return JsonResponse({"MESSAGE": f"{e}"}, status=400)
-
-def check_username(username):
-    REGEX_USERNAME = "^[A-Za-z0-9]{4,12}$"
-    if not User.objects.filter(username = username).exists():
-        if not re.compile(REGEX_USERNAME).match(username):
-            raise ValueError("INVILD_USERNAME")
-    else:
-        raise ValueError("EXISTED_USERNAME")
-
-def check_password(password):
-    REGEX_PASSWORD = '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$'
-    if not re.compile(REGEX_PASSWORD).match(password):
-        raise ValueError("INVAILD_PASSWORD")
-
-def check_email(email):
-    REGEX_EMAIL = '^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-    if not User.objects.filter(email = email).exists():
-        if not re.compile(REGEX_EMAIL).match(email):
-            raise ValueError("INVAILD_EMAIL")
-    else:
-        raise ValueError("INVAILD_EMAIL")
-
-def check_phone_number(phone_number):
-    REGEX_PHONE_NUMBER = '^\d{3}-\d{3,4}-\d{4}$'
-    if not User.objects.filter(phone_number = phone_number).exists():
-        if not re.compile(REGEX_PHONE_NUMBER).match(phone_number):
-            raise ValueError("INVAILD_PHONE_NUMBER")
-    else:
-        raise ValueError("EXISTED_PHONE_NUMBER")
