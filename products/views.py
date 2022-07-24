@@ -1,17 +1,17 @@
 import json
-from math import ceil
 
 from django.http           import JsonResponse
 from django.views          import View
-from . import models
+from django.db.models      import Q
 
-from products.models  import Product, ProductImage, TasteByProduct
+from products.models  import Product, ProductImage, SubCategory, TasteByProduct, Taste
 
 
 class MainProductView(View): 
     def get(self, request): 
         premiums             = Product.objects.all().order_by('-price')[:3]
         fresh_products       = Product.objects.all().order_by('-roasting_date')[:4]
+
         result_premium       = [{
                     'id'            : premium.id,
                     'name'          : premium.name,
@@ -36,20 +36,37 @@ class MainProductView(View):
 
 
 class CoffeeProductView(View):
-    def get(self, request, coffee_category_id=None):
+    def get(self, request):      
+        page             = int(request.GET.get('page', 1)or 1)
+        category         = request.GET.get('category')or None
+        tastes           = request.GET.getlist('taste')or None
+        filter           = request.GET.getlist('filter')or None
+        page_size        = 12
+        limit            = page_size * page
+        offset           = limit - page_size
         
-        products = Product.objects.all()
+        products         = Product.objects.all().order_by('id')
+    
+        if category:
+            products     = Product.objects.filter(subcategory_id=category).order_by('id')
         
-        if coffee_category_id:
-            products = Product.objects.filter(subcategory_id = coffee_category_id)
+        if tastes:
+            products     = products.filter(taste__name__in=tastes).order_by('id').distinct()
         
-        page = int(request.GET.get('page', 1)or 1)
-        page_size = 12
-        limit = page_size * page
-        offset = limit - page_size
+        if filter:
+            if 'Highprice' in filter:
+                products = products.order_by('-price')
+                if 'Highprice' in filter and 'roast' in filter:
+                    products = products.order_by('-roasting_date')
+            elif 'Lowprice' in filter:
+                products = products.order_by('price')
+                if 'Lowprice' in filter and 'roast' in filter:
+                    products = products.order_by('-roasting_date')
+            elif 'roast' in filter:
+                products = products.order_by('-roasting_date')
+    
         products = products[offset:limit]
         print(products)
-        
         result_products = [{
                     'id'           : product.id,
                     'name'         : product.name,
