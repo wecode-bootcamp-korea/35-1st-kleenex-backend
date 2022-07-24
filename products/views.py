@@ -45,7 +45,7 @@ class CoffeeProductView(View):
         offset           = limit - page_size
         
         products         = Product.objects.all().order_by('id')
-    
+
         if category:
             products     = Product.objects.filter(subcategory_id=category).order_by('id')
         
@@ -54,18 +54,19 @@ class CoffeeProductView(View):
         
         if filter:
             if 'Highprice' in filter:
-                products = products.order_by('-price')
+                products     = products.order_by('-price')
                 if 'Highprice' in filter and 'roast' in filter:
                     products = products.order_by('-roasting_date')
             elif 'Lowprice' in filter:
-                products = products.order_by('price')
+                products     = products.order_by('price')
                 if 'Lowprice' in filter and 'roast' in filter:
                     products = products.order_by('-roasting_date')
             elif 'roast' in filter:
-                products = products.order_by('-roasting_date')
-    
+                products     = products.order_by('-roasting_date')
+
+        total    = len(products)
         products = products[offset:limit]
-        print(products)
+
         result_products = [{
                     'id'           : product.id,
                     'name'         : product.name,
@@ -76,28 +77,33 @@ class CoffeeProductView(View):
                     'price'        : product.price
                 }for product in products]
 
-            
         return JsonResponse(
-            {'shop_product_list'   : result_products},
+            {'total' : total, 'shop_product_list'   : result_products},
             status = 200
         )
 
 
 class ProductDetailView(View): 
     def get(self, request, product_id): 
-        product        = Product.objects.get(id=product_id)
-        flavors        = TasteByProduct.objects.filter(product_id = product.id)
-        grainding      = Grainding.objects.all()
-        sizes          = Size.objects.filter(product_id = product.id)
-        product_images = ProductImage.objects.filter(product_id = product.id)
-        product_detail = (
-            {
-                'img'        : [image.url for image in product_images],
-                'name'       : product.name,
-                'price'      : product.price,
-                'tastes'     : [flavor.taste.name for flavor in flavors],
-                'graind_type': [graind.type for graind in grainding],
-                'size_type'  : [size.name for size in sizes]
-            }
-        )
-        return JsonResponse({'product_detail' : product_detail}, status = 200)
+        try:
+            product        = Product.objects.get(id=product_id)
+            flavors        = TasteByProduct.objects.filter(product_id = product.id)
+            grainding      = Grainding.objects.all()
+            sizes          = Size.objects.filter(product_id = product.id)
+            product_images = ProductImage.objects.filter(product_id = product.id)
+            product_detail = (
+                {
+                    'id'         : product.id,
+                    'img'        : [image.url for image in product_images],
+                    'name'       : product.name,
+                    'price'      : product.price,
+                    'tastes'     : [flavor.taste.name for flavor in flavors],
+                    'graind_type': [graind.type for graind in grainding],
+                    'size_type'  : [size.name for size in sizes]
+                }
+            )
+            return JsonResponse({'product_detail' : product_detail}, status = 200)
+
+        except Product.DoesNotExist:
+            return JsonResponse({'MESSAGE' : 'Product matching query does not exist.'}, status = 404)
+            
