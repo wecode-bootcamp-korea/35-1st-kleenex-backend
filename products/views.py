@@ -4,7 +4,7 @@ from django.http           import JsonResponse
 from django.views          import View
 from django.db.models      import Q
 
-from products.models  import Product, ProductImage, SubCategory, TasteByProduct, Taste
+from products.models  import Product, ProductImage, TasteByProduct
 
 
 class MainProductView(View): 
