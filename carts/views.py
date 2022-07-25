@@ -14,9 +14,9 @@ class CartView(View):
             data            = json.loads(request.body)
             cart            = Cart.objects.get(id=data["cart_id"])
             quantity        = data["quantity"]
-            cart.quantity   = cart.quantity + quantity
+            cart.quantity   = quantity
 
-            if cart.quantity <= 0:
+            if quantity <= 0:
                 cart.quantity = 1
 
             cart.save()
