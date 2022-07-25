@@ -99,7 +99,8 @@ class ProductDetailView(View):
                     'price'      : product.price,
                     'tastes'     : [flavor.taste.name for flavor in flavors],
                     'graind_type': [graind.type for graind in grainding],
-                    'size_type'  : [size.name for size in sizes]
+                    'size_type'  : [size.name for size in sizes],
+                    'size_price' : [size.price for size in sizes]
                 }
             )
             return JsonResponse({'product_detail' : product_detail}, status = 200)
