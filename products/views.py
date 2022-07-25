@@ -16,8 +16,10 @@ class MainProductView(View):
                     'name'          : premium.name,
                     'eng_name'      : premium.eng_name,
                     'img'           : [image.url for image in ProductImage.objects.filter(product_id = premium.id)],
+                    'img_id'        : [image.id for image in ProductImage.objects.filter(product_id = premium.id)],
                     'roasting_date' : premium.roasting_date,
                     'taste'         : [flavor.taste.name for flavor in TasteByProduct.objects.filter(product_id = premium.id)],
+                    'taste_id'      : [flavor.taste.id for flavor in TasteByProduct.objects.filter(product_id = premium.id)],
                     'price'         : premium.price
                 } for premium in premiums]
         
@@ -26,8 +28,10 @@ class MainProductView(View):
                     'name'          : fresh_product.name,
                     'eng_name'      : fresh_product.eng_name,
                     'img'           : [image.url for image in ProductImage.objects.filter(product_id = fresh_product.id)],
+                    'img_id'        : [image.id for image in ProductImage.objects.filter(product_id = fresh_product.id)],
                     'roasting_date' : fresh_product.roasting_date,
                     'taste'         : [flavor.taste.name for flavor in TasteByProduct.objects.filter(product_id = fresh_product.id)],
+                    'taste_id'      : [flavor.taste.id for flavor in TasteByProduct.objects.filter(product_id = fresh_product.id)],
                     'price'         : fresh_product.price
                 } for fresh_product in fresh_products]
 
@@ -35,7 +39,7 @@ class MainProductView(View):
 
 
 class CoffeeProductView(View):
-    def get(self, request):      
+    def get(self, request):
         page             = int(request.GET.get('page', 1)or 1)
         category         = request.GET.get('category')or None
         tastes           = request.GET.getlist('taste')or None
@@ -72,7 +76,9 @@ class CoffeeProductView(View):
                     'name'         : product.name,
                     'eng_name'     : product.eng_name,
                     'img'          : [image.url for image in ProductImage.objects.filter(product_id=product.id)],
+                    'img_id'       : [image.id for image in ProductImage.objects.filter(product_id=product.id)],
                     'taste'        : [flavor.taste.name for flavor in TasteByProduct.objects.filter(product_id = product.id)],
+                    'taste_id'     : [flavor.taste.id for flavor in TasteByProduct.objects.filter(product_id = product.id)],
                     'roasting_date': product.roasting_date,
                     'price'        : product.price
                 }for product in products]
@@ -98,7 +104,9 @@ class ProductDetailView(View):
                     'name'       : product.name,
                     'price'      : product.price,
                     'tastes'     : [flavor.taste.name for flavor in flavors],
+                    'tastes_id'  : [flavor.id for flavor in flavors],
                     'graind_type': [graind.type for graind in grainding],
+                    'graind_id'  : [graind.id for graind in grainding],
                     'size_type'  : [size.name for size in sizes],
                     'size_price' : [size.price for size in sizes]
                 }
