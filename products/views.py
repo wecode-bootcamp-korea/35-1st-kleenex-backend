@@ -93,22 +93,38 @@ class ProductDetailView(View):
     def get(self, request, product_id): 
         try:
             product        = Product.objects.get(id=product_id)
-            flavors        = TasteByProduct.objects.filter(product_id = product.id)
-            grainding      = Grainding.objects.all()
-            sizes          = Size.objects.filter(product_id = product.id)
-            product_images = ProductImage.objects.filter(product_id = product.id)
+            # flavors        = TasteByProduct.objects.filter(product_id = product.id)
+            # grainding      = Grainding.objects.all()
+            # sizes          = Size.objects.filter(product_id = product.id)
+            # product_images = ProductImage.objects.filter(product_id = product.id)
             product_detail = (
                 {
-                    'id'         : product.id,
-                    'img'        : [image.url for image in product_images],
-                    'name'       : product.name,
-                    'price'      : product.price,
-                    'tastes'     : [flavor.taste.name for flavor in flavors],
-                    'tastes_id'  : [flavor.id for flavor in flavors],
-                    'graind_type': [graind.type for graind in grainding],
-                    'graind_id'  : [graind.id for graind in grainding],
-                    'size_type'  : [size.name for size in sizes],
-                    'size_price' : [size.price for size in sizes]
+                    # 'id'               : product.id,
+                    # 'name'             : product.name,
+                    # 'price'            : product.price,
+                    'product'          : [{
+                        'product_id'   : product.id,
+                        'product_name' : product.name,
+                        'product_price': product.price
+                    }],
+                    'img'              : [{
+                        'img_id'       : image.id,
+                        'img_url'      : image.url
+                    } for image in ProductImage.objects.filter(product_id = product.id)],
+
+                    'taste'            : [{
+                        'taste_id'     : flavor.taste.id,
+                        'taste_name'   : flavor.taste.name
+                    } for flavor in TasteByProduct.objects.filter(product_id = product.id)],
+                    'graind'           : [{
+                        'graind_id'    : graind.id,
+                        'graind_type'  : graind.type
+                    } for graind in Grainding.objects.all()],
+                    'size'             : [{
+                        'size_id'      : size.id,
+                        'size_name'    : size.name,
+                        'size_price'   : size.price
+                    } for size in Size.objects.filter(product_id = product.id)],
                 }
             )
             return JsonResponse({'product_detail' : product_detail}, status = 200)
