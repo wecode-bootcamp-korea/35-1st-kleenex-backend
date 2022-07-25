@@ -47,11 +47,10 @@ class CartView(View):
                 curr_cart_bool  = Cart.objects.filter(user=user.id, product=product.id, graind=graind.id, size=size.id)
 
                 if curr_cart_bool.exists():
-                    curr_cart = Cart.objects.get(user=user.id, product=product.id, graind=graind.id, size=size.id)
-                    curr_cart.quantity = curr_cart.quantity + quantity
+                    curr_cart           = Cart.objects.get(user=user.id, product=product.id, graind=graind.id, size=size.id)
+                    curr_cart.quantity  = curr_cart.quantity + quantity
                     curr_cart.save()
                 else:
                     Cart.objects.create(user=user,product = product, graind=graind, size=size, quantity=quantity)
 
             return JsonResponse({'MESSAGE': 'SUCCESS'}, status=201)
-
