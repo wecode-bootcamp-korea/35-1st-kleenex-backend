@@ -15,12 +15,10 @@ class CartView(View):
 
             if "is_bool" in datas and datas["is_bool"] == "True" :
                 Cart.objects.all().delete()
-                print("all_delete")
 
             elif "is_bool" not in datas and "cart_id" in datas:
                 for data in datas["cart_id"]:
                     Cart.objects.get(id = data).delete()
-                    print("delete")
 
             return JsonResponse({"MESSAGE": "DELETE_SUCCESS"}, status=200)
 
