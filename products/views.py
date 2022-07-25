@@ -81,9 +81,9 @@ class CoffeeProductView(View):
         products = products[offset:limit]
 
         result_products = [{
-                    'id'           : product.id,
-                    'name'         : product.name,
-                    'eng_name'     : product.eng_name,
+                    'id'             : product.id,
+                    'name'           : product.name,
+                    'eng_name'       : product.eng_name,
                     'img'            : [{
                         'img_id'     : image.id,
                         'img_url'    : image.url
@@ -92,8 +92,8 @@ class CoffeeProductView(View):
                         'taste_id'   : flavor.taste.id,
                         'taste_name' : flavor.taste.name
                     } for flavor in TasteByProduct.objects.filter(product_id = product.id)],
-                    'roasting_date': product.roasting_date,
-                    'price'        : product.price
+                    'roasting_date'  : product.roasting_date,
+                    'price'          : product.price
                 }for product in products]
 
         return JsonResponse(
