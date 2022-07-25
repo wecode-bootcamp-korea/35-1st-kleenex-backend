@@ -21,8 +21,8 @@ class MainProductView(View):
                     } for image in ProductImage.objects.filter(product_id = premium.id)],
                     'roasting_date'  : premium.roasting_date,
                     'taste'          : [{
-                        'taste_id'   : flavor.taste.name,
-                        'taste_name' : flavor.taste.id
+                        'taste_id'   : flavor.taste.id,
+                        'taste_name' : flavor.taste.name
                     } for flavor in TasteByProduct.objects.filter(product_id = premium.id)],
                     'price'          : premium.price
                 } for premium in premiums]
@@ -37,8 +37,8 @@ class MainProductView(View):
                     } for image in ProductImage.objects.filter(product_id = fresh_product.id)],
                     'roasting_date'  : fresh_product.roasting_date,
                     'taste'          : [{
-                        'taste_id'   : flavor.taste.name,
-                        'taste_name' : flavor.taste.id
+                        'taste_id'   : flavor.taste.id,
+                        'taste_name' : flavor.taste.name
                     } for flavor in TasteByProduct.objects.filter(product_id = fresh_product.id)],
                     'price'          : fresh_product.price
                 } for fresh_product in fresh_products]
@@ -89,8 +89,8 @@ class CoffeeProductView(View):
                         'img_url'    : image.url
                     } for image in ProductImage.objects.filter(product_id = product.id)],
                     'taste'          : [{
-                        'taste_id'   : flavor.taste.name,
-                        'taste_name' : flavor.taste.id
+                        'taste_id'   : flavor.taste.id,
+                        'taste_name' : flavor.taste.name
                     } for flavor in TasteByProduct.objects.filter(product_id = product.id)],
                     'roasting_date': product.roasting_date,
                     'price'        : product.price
