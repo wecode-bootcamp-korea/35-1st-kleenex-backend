@@ -22,7 +22,7 @@ class SubCategory(models.Model):
 class Product(TimeStampModel):
     name               = models.CharField(max_length = 150, unique = True)
     eng_name           = models.CharField(max_length = 250, unique = True)
-    rosting_date       = models.DateField()
+    roasting_date      = models.DateField()
     price              = models.DecimalField(max_digits = 8, decimal_places = 2)
     subcategory        = models.ForeignKey('Subcategory', on_delete=models.CASCADE)
 
@@ -49,7 +49,7 @@ class Size(models.Model):
 
 class Taste(models.Model): 
     name               = models.CharField(max_length = 50)
-    product_stastes    = models.ManyToManyField(
+    products_tastes    = models.ManyToManyField(
         'Product',
         through        = 'TasteByProduct',
         through_fields = ('taste', 'product')
@@ -70,7 +70,7 @@ class Grainding(models.Model):
     type               = models.CharField(max_length = 100)
     products_grainding = models.ManyToManyField(
         'Product',
-        through         = 'GraindByProduct',
+        through        = 'GraindByProduct',
         through_fields = ('grainding', 'product')
     )
 
@@ -83,4 +83,4 @@ class GraindByProduct(models.Model):
     grainding          = models.ForeignKey('Grainding', on_delete = models.CASCADE)
 
     class Meta: 
-        db_table       = 'gainding_by_products'
+        db_table       = 'grainding_by_products'
