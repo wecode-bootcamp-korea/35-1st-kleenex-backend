@@ -14,12 +14,12 @@ class CartView(View):
             data            = json.loads(request.body)
             cart            = Cart.objects.get(id=data["cart_id"])
             quantity        = data["quantity"]
-            cart.quantity   = quantity
-            cart.save()
+            cart.quantity   = cart.quantity + quantity
 
             if cart.quantity <= 0:
                 cart.quantity = 1
-                cart.save()
+
+            cart.save()
 
             return JsonResponse({"MESSAGE": "PATCH_SUCCESS"}, status=200)
 
@@ -28,6 +28,3 @@ class CartView(View):
 
         except Cart.DoesNotExist:
             return JsonResponse({"MESSAGE": "DOESNOTEXIST_CART"}, status=400)
-
-        except Size.DoesNotExist:
-            return JsonResponse({"MESSAGE": "DOESNOTEXIST_SIZE"}, status=400)
