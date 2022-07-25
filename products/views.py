@@ -47,7 +47,7 @@ class CoffeeProductView(View):
         page_size        = 12
         limit            = page_size * page
         offset           = limit - page_size
-        
+
         products         = Product.objects.all().order_by('id')
     
         if category:
@@ -67,9 +67,11 @@ class CoffeeProductView(View):
                     products = products.order_by('-roasting_date')
             elif 'roast' in filter:
                 products = products.order_by('-roasting_date')
-    
+        
+        total    = len(products)
+        
         products = products[offset:limit]
-        print(products)
+
         result_products = [{
                     'id'           : product.id,
                     'name'         : product.name,
@@ -84,6 +86,6 @@ class CoffeeProductView(View):
 
             
         return JsonResponse(
-            {'shop_product_list'   : result_products},
+            {'total': total, 'shop_product_list'   : result_products},
             status = 200
         )
