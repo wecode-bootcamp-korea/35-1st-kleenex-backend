@@ -12,12 +12,13 @@ class CartView(View):
     def post(self, request):
         try:
             datas           = json.loads(request.body)
+            product_id      = datas["product_id"]
+            products        = datas["product"]
+            add_product  = Product.objects.get(id=product_id)
 
-            for data in datas:
-                product = Product.objects.get(id=datas[data]["id"])
-                datas[data]['quantity']
-                product.graindbyproduct_set.get(grainding_id=datas[data]['graind']).grainding
-                product.size_set.get(name=datas[data]['size'])
+            for product in products:
+                add_product.graindbyproduct_set.get(grainding_id=product["graind"]).grainding
+                add_product.size_set.get(name=product["size"])
 
         except KeyError:
             return JsonResponse({"MESSAGE": "KEYERROR"}, status=400)
@@ -38,19 +39,19 @@ class CartView(View):
             return JsonResponse({"MESSAGE": "DOESNOTEXIST_GRAINDING"}, status=400)
 
         else:
-            for data in datas:
-                user            = request.user
-                product         = Product.objects.get(id = datas[data]["id"])
-                quantity        = datas[data]['quantity']
-                graind          = product.graindbyproduct_set.get(grainding_id=datas[data]['graind']).grainding
-                size            = product.size_set.get(name=datas[data]['size'])
-                curr_cart_bool  = Cart.objects.filter(user=user.id, product=product.id, graind=graind.id, size=size.id)
+            for product in products:
+                user                = request.user
+                origin_product      = Product.objects.get(id=product_id)
+                quantity            = product["quantity"]
+                graind              = origin_product.graindbyproduct_set.get(grainding_id=product["graind"]).grainding
+                size                = origin_product.size_set.get(name=product["size"])
+                curr_cart_bool      = Cart.objects.filter(user=user.id, product=origin_product.id, graind=graind.id, size= size.id)
 
                 if curr_cart_bool.exists():
-                    curr_cart           = Cart.objects.get(user=user.id, product=product.id, graind=graind.id, size=size.id)
+                    curr_cart           = Cart.objects.get(user=user.id, product=origin_product.id, graind=graind.id, size= size.id)
                     curr_cart.quantity  = curr_cart.quantity + quantity
                     curr_cart.save()
                 else:
-                    Cart.objects.create(user=user,product = product, graind=graind, size=size, quantity=quantity)
+                    Cart.objects.create(user=user, product=origin_product, graind=graind, size=size, quantity=quantity)
 
-            return JsonResponse({'MESSAGE': 'SUCCESS'}, status=201)
+            return JsonResponse({"MESSAGE": "TEST"}, status=200)
