@@ -12,7 +12,9 @@ class CartView(View):
     @login_decorator
     @query_debugger
     def get(self, request):
-        cart_list = Cart.objects.select_related('product','user','size','graind').filter(user=request.user)
+        cart_list = Cart.objects.select_related('product','user','size','graind')\
+                                .prefetch_related('product__productimage_set')\
+                                .filter(user=request.user)
 
         result = [{
             "cart_id"       : cart.id,
