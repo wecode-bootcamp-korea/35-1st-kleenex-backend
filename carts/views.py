@@ -53,7 +53,7 @@ class CartView(View):
                     defaults    = {'quantity': quantity}
                 )
 
-                if is_bool == False:
+                if not is_bool :
                     cart.quantity += quantity
                     cart.save()
 
