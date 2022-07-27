@@ -13,17 +13,17 @@ class CartView(View):
         try:
             datas = json.loads(request.body)
 
-            if "is_bool" in datas and datas["is_bool"] == "True" :
+            if datas.get("is_bool"):
                 Cart.objects.all().delete()
 
-            elif "is_bool" not in datas and "cart_id" in datas:
+            elif datas.get("cart_id"):
                 for data in datas["cart_id"]:
-                    Cart.objects.get(id = data).delete()
+                    Cart.objects.get(id=data).delete()
 
             return JsonResponse({"MESSAGE": "DELETE_SUCCESS"}, status=200)
 
         except KeyError:
-            return JsonResponse({"MESSAGE":"KEY_ERROR"}, status=400)
+            return JsonResponse({"MESSAGE": "KEY_ERROR"}, status=400)
 
         except Cart.DoesNotExist:
             return JsonResponse({"MESSAGE": "DOESNOTEXIST_CART"}, status=400)
