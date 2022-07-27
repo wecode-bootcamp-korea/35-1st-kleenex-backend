@@ -25,7 +25,7 @@ class CartView(View):
             "graind"        : cart.graind.type,
             "quantity"      : cart.quantity,
             "image"         : cart.product.productimage_set.all()[0].url,
-            "is_checked": False
+            "is_checked"    : False
         } for cart in cart_list]
 
         return JsonResponse({'MESSAGE': result}, status=200)
