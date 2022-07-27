@@ -80,11 +80,11 @@ class CoffeeProductView(View):
                     'img'            : [{
                         'img_id'     : image.id,
                         'img_url'    : image.url
-                    } for image in ProductImage.objects.select_related('product').filter(product_id = product.id)],
+                    } for image in product.productimage_set.all()],
                     'taste'          : [{
                         'taste_id'   : flavor.taste.id,
                         'taste_name' : flavor.taste.name
-                    } for flavor in TasteByProduct.objects.select_related('taste').filter(product_id = product.id)],
+                    } for flavor in product.tastebyproduct_set.all()],
                     'roasting_date'  : product.roasting_date,
                     'price'          : product.price
                 }for product in products]
@@ -112,21 +112,21 @@ class ProductDetailView(View):
                     'img'              : [{
                         'img_id'       : image.id,
                         'img_url'      : image.url
-                    } for image in ProductImage.objects.select_related('product').filter(product_id = product.id)],
+                    } for image in product.productimage_set.all()],
 
                     'taste'            : [{
                         'taste_id'     : flavor.taste.id,
                         'taste_name'   : flavor.taste.name
-                    } for flavor in TasteByProduct.objects.select_related('taste').filter(product_id = product.id)],
+                    } for flavor in product.tastebyproduct_set.all()],
                     'graind'           : [{
                         'graind_id'    : graind.id,
                         'graind_type'  : graind.type
-                    } for graind in Grainding.objects.all()],
+                    } for graind in product.grainding_set.all()],
                     'size'             : [{
                         'size_id'      : size.id,
                         'size_name'    : size.name,
                         'size_price'   : size.price
-                    } for size in Size.objects.select_related('product').filter(product_id = product.id)],
+                    } for size in product.size_set.all()],
                 }
             )
             return JsonResponse({'product_detail' : product_detail}, status = 200)
@@ -147,11 +147,11 @@ class MainSearchView(View):
                     'img'            : [{
                         'img_id'     : image.id,
                         'img_url'    : image.url
-                    } for image in ProductImage.objects.select_related('product').filter(product_id = product.id)],
+                    } for image in product.productimage_set.all()],
                     'taste'          : [{
                         'taste_id'   : flavor.taste.id,
                         'taste_name' : flavor.taste.name
-                    } for flavor in TasteByProduct.objects.select_related('taste').filter(product_id = product.id)],
+                    } for flavor in product.tastebyproduct_set.all()],
                     'roasting_date'  : product.roasting_date,
                     'price'          : product.price
                 }for product in products]
@@ -174,11 +174,11 @@ class MainSearchView(View):
                     'img'            : [{
                         'img_id'     : image.id,
                         'img_url'    : image.url
-                    } for image in ProductImage.objects.select_related('product').filter(product_id = product.id)],
+                    } for image in product.productimage_set.all()],
                     'taste'          : [{
                         'taste_id'   : flavor.taste.id,
                         'taste_name' : flavor.taste.name
-                    } for flavor in TasteByProduct.objects.select_related('taste').filter(product_id = product.id)],
+                    } for flavor in product.tastebyproduct_set.all()],
                     'roasting_date'  : product.roasting_date,
                     'price'          : product.price
                 }for product in products]
