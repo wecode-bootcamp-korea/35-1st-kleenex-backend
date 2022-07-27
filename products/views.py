@@ -4,9 +4,11 @@ from django.http           import JsonResponse
 from django.views          import View
 
 from products.models  import Product, ProductImage, TasteByProduct
+from decorators       import query_debugger
 
 
 class MainProductView(View): 
+    @query_debugger
     def get(self, request): 
         premiums             = Product.objects.all().order_by('-price')[:3]
         fresh_products       = Product.objects.all().order_by('-roasting_date')[:4]
@@ -18,8 +20,8 @@ class MainProductView(View):
                     'img'           : [image.url for image in ProductImage.objects.filter(product_id = premium.id)],
                     'img_id'        : [image.id for image in ProductImage.objects.filter(product_id = premium.id)],
                     'roasting_date' : premium.roasting_date,
-                    'taste'         : [flavor.taste.name for flavor in TasteByProduct.objects.filter(product_id = premium.id)],
-                    'taste_id'      : [flavor.taste.id for flavor in TasteByProduct.objects.filter(product_id = premium.id)],
+                    'taste'         : [flavor.taste.name for flavor in TasteByProduct.objects.select_related('taste').filter(product_id = premium.id)],
+                    'taste_id'      : [flavor.taste.id for flavor in TasteByProduct.objects.select_related('taste').filter(product_id = premium.id)],
                     'price'         : premium.price
                 } for premium in premiums]
         
@@ -30,8 +32,8 @@ class MainProductView(View):
                     'img'           : [image.url for image in ProductImage.objects.filter(product_id = fresh_product.id)],
                     'img_id'        : [image.id for image in ProductImage.objects.filter(product_id = fresh_product.id)],
                     'roasting_date' : fresh_product.roasting_date,
-                    'taste'         : [flavor.taste.name for flavor in TasteByProduct.objects.filter(product_id = fresh_product.id)],
-                    'taste_id'      : [flavor.taste.id for flavor in TasteByProduct.objects.filter(product_id = fresh_product.id)],
+                    'taste'         : [flavor.taste.name for flavor in TasteByProduct.objects.select_related('taste').filter(product_id = fresh_product.id)],
+                    'taste_id'      : [flavor.taste.id for flavor in TasteByProduct.objects.select_related('taste').filter(product_id = fresh_product.id)],
                     'price'         : fresh_product.price
                 } for fresh_product in fresh_products]
 
