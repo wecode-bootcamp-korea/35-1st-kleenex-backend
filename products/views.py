@@ -8,7 +8,6 @@ from products.models       import Product, ProductImage, TasteByProduct, Graindi
 
 from urllib.parse          import unquote
 
-from decorators import query_debugger
 
 class MainProductView(View):
     def get(self, request): 
@@ -50,7 +49,6 @@ class MainProductView(View):
 
 
 class CoffeeProductView(View):
-    @query_debugger
     def get(self, request):      
         category         = request.GET.get('category')
         tastes           = request.GET.getlist('taste')
@@ -164,3 +162,28 @@ class MainSearchView(View):
         return JsonResponse({'result' : result}, status =200)
 
 
+class MainSearchView(View):
+    def get(self, request):
+        search   = request.GET.get('keywords')
+        products = Product.objects.filter(name__icontains=unquote(search))
+
+        result = [{  
+                    'id'             : product.id,
+                    'name'           : product.name,
+                    'eng_name'       : product.eng_name,
+                    'img'            : [{
+                        'img_id'     : image.id,
+                        'img_url'    : image.url
+                    } for image in ProductImage.objects.select_related('product').filter(product_id = product.id)],
+                    'taste'          : [{
+                        'taste_id'   : flavor.taste.id,
+                        'taste_name' : flavor.taste.name
+                    } for flavor in TasteByProduct.objects.select_related('taste').filter(product_id = product.id)],
+                    'roasting_date'  : product.roasting_date,
+                    'price'          : product.price
+                }for product in products]
+
+        if not products.exists():
+            return JsonResponse({'MESSAGE' : 'NO RESULT'}, status=404)
+
+        return JsonResponse({'result' : result}, status =200)
