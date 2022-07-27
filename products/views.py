@@ -143,9 +143,8 @@ class ProductDetailView(View):
 
 class MainSearchView(View):
     def get(self, request):
-        search = request.GET.get('keywords')
-        key = unquote(search)
-        products = Product.objects.filter(name__icontains=key)
+        search   = request.GET.get('keywords')
+        products = Product.objects.filter(name__icontains=unquote(search))
 
         result = [{  
                     'id'             : product.id,
