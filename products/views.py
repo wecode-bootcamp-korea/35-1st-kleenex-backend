@@ -12,7 +12,6 @@ class MainProductView(View):
     def get(self, request): 
         premiums             = Product.objects.all().order_by('-price')[:3]
         fresh_products       = Product.objects.all().order_by('-roasting_date')[:4]
-
         result_premium       = [{
                     'id'             : premium.id,
                     'name'           : premium.name,
@@ -51,13 +50,14 @@ class MainProductView(View):
 class CoffeeProductView(View):
     def get(self, request):      
         page             = int(request.GET.get('page', 1)or 1)
-        category         = request.GET.get('category')or None
-        tastes           = request.GET.getlist('taste')or None
-        filter           = request.GET.getlist('filter')or None
+        category         = request.GET.get('category')
+        tastes           = request.GET.getlist('taste')
+        filter           = request.GET.getlist('filter')
         page_size        = 12
         limit            = page_size * page
         offset           = limit - page_size
-
+        print(type(request))
+        print(category)
         products         = Product.objects.all().order_by('id')
     
         if category:
@@ -143,7 +143,7 @@ class ProductDetailView(View):
 
 class MainSearchView(View):
     def get(self, request):
-        search = request.GET.get('search')
+        search = request.GET.get('keywords')
         key = unquote(search)
         products = Product.objects.filter(name__icontains=key)
 
@@ -163,7 +163,7 @@ class MainSearchView(View):
                     'price'          : product.price
                 }for product in products]
 
+        if len(products) == 0:
+            return JsonResponse({'MESSAGE' : 'NO RESULT'}, status=404)
 
-        return JsonResponse({'MESSAGE' : result}, status =200)
-
-            
+        return JsonResponse({'result' : result}, status =200)
