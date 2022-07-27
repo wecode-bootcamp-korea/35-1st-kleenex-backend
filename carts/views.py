@@ -12,13 +12,14 @@ class CartView(View):
     def patch(self,request):
         try:
             data            = json.loads(request.body)
-            cart            = Cart.objects.get(id=data["cart_id"])
+            user            = request.user
+            cart            = Cart.objects.get(id=data["cart_id"], user=user)
             quantity        = data["quantity"]
-            cart.quantity   = quantity
 
             if quantity <= 0:
-                cart.quantity = 1
-
+                return JsonResponse({'message' : 'DOEDNOTEXIST_MINUS'}, status=400)
+            
+            cart.quantity = quantity
             cart.save()
 
             return JsonResponse({"MESSAGE": "PATCH_SUCCESS"}, status=200)
