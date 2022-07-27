@@ -14,7 +14,7 @@ class CartView(View):
             datas = json.loads(request.body)
             user = request.user 
             if datas.get("is_bool"):
-                Cart.objects.all(user=user).delete()
+                Cart.objects.filter(user=user).delete()
 
             elif datas.get("cart_id"):
                 for data in datas["cart_id"]:
