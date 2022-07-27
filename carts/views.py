@@ -107,10 +107,9 @@ class CartView(View):
             if datas.get("is_bool"):
                 Cart.objects.filter(user=user).delete()
 
-            elif datas.get("cart_id"):
-                for data in datas["cart_id"]:
-                    Cart.objects.get(id=data, user=user).delete()
-
+            for data in datas.get("cart_id",None):
+                Cart.objects.get(id=data, user=user).delete()
+            
             return JsonResponse({"MESSAGE": "DELETE_SUCCESS"}, status=200)
 
         except KeyError:
