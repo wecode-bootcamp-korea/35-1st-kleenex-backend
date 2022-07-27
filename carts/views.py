@@ -6,21 +6,24 @@ from django.views import View
 from carts.models import Cart
 from products.models import *
 from core.utils import login_decorator
+from decorators import query_debugger
 
 class CartView(View):
     @login_decorator
+    @query_debugger
     def get(self, request):
-        cart_list = Cart.objects.filter(user=request.user)
+        cart_list = Cart.objects.select_related('product','user','size','graind').filter(user=request.user)
+
         result = [{
-            "cart_id": cart.id,
-            "id": cart.product.id,
-            "user": cart.user.name,
-            "product": cart.product.name,
-            "size": cart.size.name,
-            "price": cart.size.price,
-            "graind": cart.graind.type,
-            "quantity": cart.quantity,
-            "image": cart.product.productimage_set.all()[0].url,
+            "cart_id"       : cart.id,
+            "id"            : cart.product.id,
+            "user"          : cart.user.name,
+            "product"       : cart.product.name,
+            "size"          : cart.size.name,
+            "price"         : cart.size.price,
+            "graind"        : cart.graind.type,
+            "quantity"      : cart.quantity,
+            "image"         : cart.product.productimage_set.all()[0].url,
             "is_checked": False
         } for cart in cart_list]
 
