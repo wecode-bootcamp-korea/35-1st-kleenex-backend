@@ -20,12 +20,12 @@ class MainProductView(View):
                     'img'            : [{
                         'img_id'     : image.id,
                         'img_url'    : image.url
-                    } for image in ProductImage.objects.select_related('product').filter(product_id = premium.id)],
+                    } for image in premium.productimage_set.all()],
                     'roasting_date'  : premium.roasting_date,
                     'taste'          : [{
                         'taste_id'   : flavor.taste.id,
                         'taste_name' : flavor.taste.name
-                    } for flavor in TasteByProduct.objects.select_related('taste').filter(product_id = premium.id)],
+                    } for flavor in premium.tastebyproduct_set.all()],
                     'price'          : premium.price
                 } for premium in premiums]
         
@@ -36,12 +36,12 @@ class MainProductView(View):
                     'img'            : [{
                         'img_id'     : image.id,
                         'img_url'    : image.url
-                    } for image in ProductImage.objects.select_related('product').filter(product_id = fresh_product.id)],
+                    } for image in fresh_product.productimage_set.all()],
                     'roasting_date'  : fresh_product.roasting_date,
                     'taste'          : [{
                         'taste_id'   : flavor.taste.id,
                         'taste_name' : flavor.taste.name
-                    } for flavor in TasteByProduct.objects.select_related('taste').filter(product_id = fresh_product.id)],
+                    } for flavor in fresh_product.tastebyproduct_set.all()],
                     'price'          : fresh_product.price
                 } for fresh_product in fresh_products]
 
