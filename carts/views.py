@@ -6,11 +6,9 @@ from django.views import View
 from carts.models import Cart
 from products.models import *
 from core.utils import login_decorator
-from decorators import query_debugger
 
 class CartView(View):
     @login_decorator
-    @query_debugger
     def get(self, request):
         cart_list = Cart.objects.select_related('product','user','size','graind')\
                                 .prefetch_related('product__productimage_set')\
