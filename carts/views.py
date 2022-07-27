@@ -1,9 +1,6 @@
 import json
 
-<<<<<<< HEAD
 from django.db import transaction
-=======
->>>>>>> main
 from django.http import JsonResponse
 from django.views import View
 
@@ -13,7 +10,6 @@ from core.utils import login_decorator
 
 class CartView(View):
     @login_decorator
-<<<<<<< HEAD
     def post(self, request):
         try:
             datas           = json.loads(request.body)
@@ -59,7 +55,7 @@ class CartView(View):
 
         except GraindByProduct.DoesNotExist:
             return JsonResponse({"MESSAGE": "DOESNOTEXIST_GRAINDING"}, status=400)
-=======
+
     def get(self, request):
         cart_list = Cart.objects.select_related('product','user','size','graind')\
                                 .prefetch_related('product__productimage_set')\
@@ -79,4 +75,3 @@ class CartView(View):
         } for cart in cart_list]
 
         return JsonResponse({'MESSAGE': result}, status=200)
->>>>>>> main
