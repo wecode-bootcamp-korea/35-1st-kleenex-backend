@@ -9,7 +9,6 @@ from products.models import *
 from core.utils import login_decorator
 
 class CartView(View):
-    @login_decorator
     def get(self, request):
         cart_list = Cart.objects.select_related('product','user','size','graind')\
                                 .prefetch_related('product__productimage_set')\
@@ -76,3 +75,25 @@ class CartView(View):
 
         except GraindByProduct.DoesNotExist:
             return JsonResponse({"MESSAGE": "DOESNOTEXIST_GRAINDING"}, status=400)
+
+    @login_decorator
+    def patch(self,request):
+        try:
+            data            = json.loads(request.body)
+            user            = request.user
+            cart            = Cart.objects.get(id=data["cart_id"], user=user)
+            quantity        = data["quantity"]
+
+            if quantity <= 0:
+                return JsonResponse({'MESSAGE' : f'INVALID VALUE : {quantity} '}, status=400)
+            
+            cart.quantity = quantity
+            cart.save()
+
+            return JsonResponse({"MESSAGE": "PATCH_SUCCESS"}, status=200)
+
+        except KeyError:
+            return JsonResponse({"MESSAGE":"KEY_ERROR"}, status=400)
+
+        except Cart.DoesNotExist:
+            return JsonResponse({"MESSAGE": "DOESNOTEXIST_CART"}, status=400)
