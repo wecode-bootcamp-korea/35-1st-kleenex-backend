@@ -85,7 +85,7 @@ class CartView(View):
             quantity        = data["quantity"]
 
             if quantity <= 0:
-                return JsonResponse({'message' : 'DOEDNOTEXIST_MINUS'}, status=400)
+                return JsonResponse({'MESSAGE' : f'INVALID VALUE : {quantity} '}, status=400)
             
             cart.quantity = quantity
             cart.save()
