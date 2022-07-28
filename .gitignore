@@ -403,5 +403,4 @@ zsdoc/data
 my_settings.py
 upload.py
 csv_file
-
 decorators.py
