@@ -1,3 +1,4 @@
+from itertools import count
 import json
 
 from django.http           import JsonResponse
@@ -71,6 +72,8 @@ class CoffeeProductView(View):
         None        : 'id'
         }
         
+        total = Product.objects.all().count()
+
         products = Product.objects.filter(q).order_by(sort_dict.get(sorting)).distinct()[offset:offset+limit]
 
         result_products = [{
@@ -91,7 +94,7 @@ class CoffeeProductView(View):
 
         return JsonResponse(
             {
-            'total' : len(products),
+            'total' : total,
             'shop_product_list'   : result_products
             },
             status = 200
