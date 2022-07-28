@@ -9,6 +9,7 @@ from products.models import *
 from core.utils import login_decorator
 
 class CartView(View):
+    @login_decorator
     def get(self, request):
         cart_list = Cart.objects.select_related('product','user','size','graind')\
                                 .prefetch_related('product__productimage_set')\
@@ -94,6 +95,26 @@ class CartView(View):
 
         except KeyError:
             return JsonResponse({"MESSAGE":"KEY_ERROR"}, status=400)
+
+        except Cart.DoesNotExist:
+            return JsonResponse({"MESSAGE": "DOESNOTEXIST_CART"}, status=400)
+
+    @login_decorator
+    def delete(self, request):
+        try:
+            datas = json.loads(request.body)
+            user = request.user 
+            if datas.get("is_bool"):
+                Cart.objects.filter(user=user).delete()
+
+            elif datas.get("cart_id"):
+                for data in datas["cart_id"]:
+                    Cart.objects.get(id=data, user=user).delete()
+
+            return JsonResponse({"MESSAGE": "DELETE_SUCCESS"}, status=200)
+
+        except KeyError:
+            return JsonResponse({"MESSAGE": "KEY_ERROR"}, status=400)
 
         except Cart.DoesNotExist:
             return JsonResponse({"MESSAGE": "DOESNOTEXIST_CART"}, status=400)
