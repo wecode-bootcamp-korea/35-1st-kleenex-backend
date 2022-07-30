@@ -9,6 +9,9 @@
  - FRONTEND
  
  김영수, 오창훈, 최원익
+ 
+ 
+ 
 
 ## 개발 기간
 - 개발 기간 : 2022-07-18 ~ 2022-07-29 (12일)
@@ -57,6 +60,11 @@ https://user-images.githubusercontent.com/99232122/181917935-402877fe-ae48-42bd-
 
 ## DB모델링
 ![DB](https://user-images.githubusercontent.com/99232122/181917443-5e959b79-4af4-4775-9c71-8be9a1e22194.png)
+
+
+## API 명세서
+
+![API](https://user-images.githubusercontent.com/99232122/181919207-527e7ba6-8043-41b4-9305-1fc4ea007d53.png)
 
 
 ## 기술 스택
